@@ -106,45 +106,6 @@ impl TicTacToe {
         self.turn = self.turn.opponent();
         Ok(GameState::Ongoing)
     }
-
-    fn play(&mut self) {
-        use std::io;
-        let mut buf = String::new();
-        let stdin = io::stdin();
-        loop {
-            // Display board
-            print!("{}[2J", 27 as char);
-            println!("{}", self);
-            // Display cur player
-            println!("Player to move: {}", self.turn.to_char());
-            // Get move
-            buf.clear();
-            stdin.read_line(&mut buf).unwrap();
-            let mut chars = buf.chars();
-            let input_row = chars.next().unwrap();
-            chars.next();
-            let input_col = chars.next().unwrap();
-            let row = input_row as usize - '0' as usize;
-            let col = input_col as usize - '0' as usize;
-            // Display result of move (good move or bad move)
-            let result = self.make_move(row, col);
-            match result {
-                Ok(GameState::Ongoing) => {},
-                Ok(GameState::Full) => {
-                    println!("{}", self);
-                    println!("Game over! It's a draw");
-                    break;
-                }
-                Ok(GameState::Won(player)) => {
-                    println!("{}", self);
-                    println!("Game over! Player {} has won!", player.to_char());
-                    break;
-                }
-                Err(e) => println!("{}", e),
-            }
-        }
-
-    }
 }
 
 impl Display for TicTacToe {
@@ -156,9 +117,44 @@ impl Display for TicTacToe {
 }
 
 fn main() {
+    use std::io;
     let mut tictactoe = TicTacToe::new();
-    tictactoe.play();
+    let mut buf = String::new();
+    let stdin = io::stdin();
+    loop {
+        // Display board
+        print!("{}[2J", 27 as char);
+        println!("{}", tictactoe);
+        // Display cur player
+        println!("Player to move: {}", tictactoe.turn.to_char());
+        // Get move
+        buf.clear();
+        stdin.read_line(&mut buf).unwrap();
+        let mut chars = buf.chars();
+        let input_row = chars.next().unwrap();
+        chars.next();
+        let input_col = chars.next().unwrap();
+        let row = input_row as usize - '0' as usize;
+        let col = input_col as usize - '0' as usize;
+        // Display result of move (good move or bad move)
+        let result = tictactoe.make_move(row, col);
+        match result {
+            Ok(GameState::Ongoing) => {},
+            Ok(GameState::Full) => {
+                println!("{}", tictactoe);
+                println!("Game over! It's a draw");
+                break;
+            }
+            Ok(GameState::Won(player)) => {
+                println!("{}", tictactoe);
+                println!("Game over! Player {} has won!", player.to_char());
+                break;
+            }
+            Err(e) => println!("{}", e),
+        }
+    }
 }
+
 
 #[cfg(test)]
 mod tests {
