@@ -63,6 +63,7 @@ impl TicTacToe {
     }
 
     fn has_won(&self, player: Player) -> bool {
+        // macro improvement from https://github.com/msiemens/rust-tictactoe/blob/master/src/game.rs
         macro_rules! has {
             ($player:expr, $row:expr, $col:expr) => {
                 self.board[$row][$col] == Some($player)
